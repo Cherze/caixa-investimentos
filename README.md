@@ -1,54 +1,198 @@
-# caixa-investimentos
+Desafio – Painel de Investimentos com Perfil de Risco Dinâmico 
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Objetivo
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+Criar uma aplicação web que analisa o comportamento financeiro do cliente e ajusta automaticamente seu perfil de risco, sugerindo produtos de investimento como CDBs, LCIs, LCAs, Tesouro Direto,  Fundos, etc. 
 
-## Running the application in dev mode
+Desafio Back-end – Java
 
-You can run your application in dev mode that enables live coding using:
+Você precisa disponibilizar para todos os brasileiros a possibilidade de simulação de Investimentos. Esperamos uma API que retornem perfil de risco com base em dados financeiros, produtos de investimento mais adequados ao perfil e histórico de investimentos e simular investimentos com entrada de valor, prazo e tipo.
 
-```shell script
-./mvnw quarkus:dev
-```
+Desenvolva uma API em linguagem Java 21 que terão como requisitos: 
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+• Receber um envelope JSON, via chamada à API, contendo uma solicitação de simulação de investimentos.  
 
-## Packaging and running the application
+• Consultar um conjunto de informações parametrizadas em uma tabela de banco de dados SQL Server ou SQLite.  
 
-The application can be packaged using:
+• Validar os dados de entrada da API com base nos parâmetros de produtos retornados no banco de dados.  
 
-```shell script
-./mvnw package
-```
+• Filtrar qual produto se adequa aos parâmetros de entrada. 
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+• Realizar cálculos para as simulações de cada tipo de investimento 
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+• Retornar um envelope JSON contendo o nome do produto validado, e o resultado da simulação.  
 
-If you want to build an _über-jar_, execute the following command:
+• Persistir em banco local a simulação realizada.  
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+• Criar um endpoint para retornar todas as simulações realizadas.  
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+• Criar um endpoint para retornar os valores simulados para cada produto em cada dia.  
 
-## Creating a native executable
+• Criar um endpoint para retornar dados de telemetria com volumes e tempos de resposta para cada serviço.  
 
-You can create a native executable using:
+• Disponibilizar o código fonte, com todas as evidências no formato zip ou arquivo texto contendo link para o Git público.
 
-```shell script
-./mvnw package -Dnative
-```
+• Incluir no projeto todos os arquivos para execução via container (dockerfile / Docker compose)  
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+• Autenticação em Keycloak 
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+• Motor de Recomendação: 
 
-You can then execute your native executable with: `./target/caixa-investimentos-1.0.0-SNAPSHOT-runner`
+o Algoritmo simples baseado em: 
+▪ Volume de investimentos 
+▪ Frequência de movimentações 
+▪ Preferência por liquidez ou rentabilidade 
+o Pode usar pontuação para definir perfil: 
+▪ Conservador: baixa movimentação, foco em liquidez 
+▪ Moderado: equilíbrio entre liquidez e rentabilidade 
+▪ Agressivo: busca por alta rentabilidade, maior risco 
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+Modelos de Envelopes JSON para a API 
+
+1. Solicitação de Simulação de Investimento 
+
+Endpoint: POST /simular-investimento 
+Request 
+{ 
+} 
+"clienteId": 123, 
+"valor": 10000.00, 
+"prazoMeses": 12, 
+"tipoProduto": "CDB" 
+Response 
+{ 
+} 
+"produtoValidado": { 
+"id": 101, 
+"nome": "CDB Caixa 2026", 
+"tipo": "CDB", 
+"rentabilidade": 0.12, 
+"risco": "Baixo" 
+}, 
+"resultadoSimulacao": { 
+"valorFinal": 11200.00, 
+"rentabilidadeEfetiva": 0.12, 
+"prazoMeses": 12 
+}, 
+"dataSimulacao": "2025-10-31T14:00:00Z" 
+
+2. Histórico de Simulações Realizadas 
+Endpoint: GET /simulacoes 
+Response 
+[ 
+  { 
+    "id": 1, 
+    "clienteId": 123, 
+    "produto": "CDB Caixa 2026", 
+    "valorInvestido": 10000.00, 
+    "valorFinal": 11200.00, 
+    "prazoMeses": 12, 
+    "dataSimulacao": "2025-10-31T14:00:00Z" 
+  }, 
+  { 
+    "id": 2, 
+    "clienteId": 123, 
+    "produto": "Fundo XPTO", 
+    "valorInvestido": 5000.00, 
+    "valorFinal": 5800.00, 
+    "prazoMeses": 6, 
+    "dataSimulacao": "2025-09-15T10:30:00Z" 
+  } 
+] 
+ 
+3.  Valores Simulados por Produto e Dia 
+Endpoint: GET /simulacoes/por-produto-dia 
+Response 
+[ 
+  { 
+    "produto": "CDB Caixa 2026", 
+    "data": "2025-10-30", 
+    "quantidadeSimulacoes": 15, 
+    "mediaValorFinal": 11050.00 
+  }, 
+  { 
+    "produto": "Fundo XPTO", 
+    "data": "2025-10-30", 
+    "quantidadeSimulacoes": 8, 
+    "mediaValorFinal": 5700.00 
+  } 
+] 
+
+4. Dados de Telemetria 
+Endpoint: GET /telemetria 
+Response 
+{ 
+  "servicos": [ 
+    { 
+      "nome": "simular-investimento", 
+      "quantidadeChamadas": 120, 
+      "mediaTempoRespostaMs": 250 
+    }, 
+    { 
+      "nome": "perfil-risco", 
+      "quantidadeChamadas": 80, 
+      "mediaTempoRespostaMs": 180 
+    } 
+  ], 
+  "periodo": { 
+    "inicio": "2025-10-01", 
+    "fim": "2025-10-31" 
+  } 
+} 
+
+5. Perfil de Risco 
+Endpoint: GET /perfil-risco/{clienteId} 
+Response 
+{ 
+  "clienteId": 123, 
+  "perfil": "Moderado", 
+  "pontuacao": 65, 
+  "descricao": "Perfil equilibrado entre segurança e rentabilidade." 
+} 
+
+6. Produtos Recomendados 
+Endpoint: GET /produtos-recomendados/{perfil} 
+Response 
+[ 
+  { 
+    "id": 101, 
+    "nome": "CDB Caixa 2026", 
+    "tipo": "CDB", 
+    "rentabilidade": 0.12, 
+    "risco": "Baixo" 
+}, 
+{ 
+"id": 102, 
+"nome": "Fundo XPTO", 
+"tipo": "Fundo", 
+"rentabilidade": 0.18, 
+"risco": "Alto" 
+} 
+] 
+
+7. Histórico de Investimentos 
+Endpoint: GET /investimentos/{clienteId} 
+Response 
+[ 
+] 
+{ 
+"id": 1, 
+"tipo": "CDB", 
+"valor": 5000.00, 
+"rentabilidade": 0.12, 
+"data": "2025-01-15" 
+}, 
+{ 
+"id": 2, 
+"tipo": "Fundo Multimercado", 
+"valor": 3000.00, 
+"rentabilidade": 0.08, 
+"data": "2025-03-10" 
+} 
+
+
+Critérios de Avaliação 
+• Estrutura da API e documentação 
+• Qualidade do motor de recomendação 
+• Segurança e tratamento de erros 
+• Testes unitários e integração 
