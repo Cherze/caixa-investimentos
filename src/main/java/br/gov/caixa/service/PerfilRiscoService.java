@@ -138,13 +138,15 @@ public class PerfilRiscoService {
     }
 
     public Optional<PerfilRiscoResponse> obterPerfilRisco(Long clienteId) {
-        return PerfilRisco.find("clienteId", clienteId)
+        Optional<PerfilRisco> perfilOpt = PerfilRisco.find("clienteId", clienteId)
                 .firstResultOptional()
-                .map(perfil -> new PerfilRiscoResponse(
-                        perfil.clienteId,
-                        perfil.perfil,
-                        perfil.pontuacao,
-                        perfil.descricao
-                ));
+                .map(obj -> (PerfilRisco) obj);
+
+        return perfilOpt.map(perfil -> new PerfilRiscoResponse(
+                perfil.clienteId,
+                perfil.perfil,
+                perfil.pontuacao,
+                perfil.descricao
+        ));
     }
 }

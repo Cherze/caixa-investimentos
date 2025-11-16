@@ -11,7 +11,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.responses.ApiResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 import java.time.LocalDateTime;
@@ -30,8 +30,8 @@ public class SimulacaoResource {
     @Path("/simular-investimento")
     @RolesAllowed("user")
     @Operation(summary = "Simular investimento", description = "Realiza simulação de investimento baseada nos parâmetros fornecidos")
-    @ApiResponse(responseCode = "200", description = "Simulação realizada com sucesso")
-    @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")
+    @APIResponse(responseCode = "200", description = "Simulação realizada com sucesso")
+    @APIResponse(responseCode = "400", description = "Dados de entrada inválidos")
     public Response simularInvestimento(@Valid SimulacaoRequest request) {
         try {
             SimulacaoResponse response = simulacaoService.simularInvestimento(request);

@@ -2,11 +2,14 @@ Desafio – Painel de Investimentos com Perfil de Risco Dinâmico
 
 Objetivo
 
-Criar uma aplicação web que analisa o comportamento financeiro do cliente e ajusta automaticamente seu perfil de risco, sugerindo produtos de investimento como CDBs, LCIs, LCAs, Tesouro Direto,  Fundos, etc. 
+Criar uma aplicação web que analisa o comportamento financeiro do cliente e ajusta automaticamente seu perfil 
+de risco, sugerindo produtos de investimento como CDBs, LCIs, LCAs, Tesouro Direto,  Fundos, etc. 
 
 Desafio Back-end – Java
 
-Você precisa disponibilizar para todos os brasileiros a possibilidade de simulação de Investimentos. Esperamos uma API que retornem perfil de risco com base em dados financeiros, produtos de investimento mais adequados ao perfil e histórico de investimentos e simular investimentos com entrada de valor, prazo e tipo.
+Você precisa disponibilizar para todos os brasileiros a possibilidade de simulação de Investimentos. 
+Esperamos uma API que retornem perfil de risco com base em dados financeiros, produtos de investimento mais 
+adequados ao perfil e histórico de investimentos e simular investimentos com entrada de valor, prazo e tipo.
 
 Desenvolva uma API em linguagem Java 21 que terão como requisitos: 
 
@@ -30,7 +33,8 @@ Desenvolva uma API em linguagem Java 21 que terão como requisitos:
 
 • Criar um endpoint para retornar dados de telemetria com volumes e tempos de resposta para cada serviço.  
 
-• Disponibilizar o código fonte, com todas as evidências no formato zip ou arquivo texto contendo link para o Git público.
+• Disponibilizar o código fonte, com todas as evidências no formato zip ou arquivo texto contendo link para 
+o Git público.
 
 • Incluir no projeto todos os arquivos para execução via container (dockerfile / Docker compose)  
 
